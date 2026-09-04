@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Magicballswm</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #stage { width: 100vw; height: 100vh; }
+  #stage > * { width: 100% !important; height: 100% !important; }
+</style>
+<script src="/ext/unpkg.com/@ruffle-rs/ruffle"></script>
+</head>
+<body>
+<div id="stage"></div>
+<script>
+  window.RufflePlayer = window.RufflePlayer || {};
+  window.RufflePlayer.config = { autoplay: "on", unmuteOverlay: "hidden", contextMenu: "on" };
+
+  function startMovie() {
+    if (!window.RufflePlayer || !window.RufflePlayer.newest) {
+      document.getElementById("stage").textContent = "Flash player failed to load.";
+      return;
+    }
+    var player = window.RufflePlayer.newest().createPlayer();
+    document.getElementById("stage").appendChild(player);
+    player.load("magicballswm.swf");
+  }
+
+  if (document.readyState === "complete") startMovie();
+  else window.addEventListener("load", startMovie);
+</script>
+</body>
+</html>

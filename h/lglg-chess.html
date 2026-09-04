@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    
+
+    <title>Chess | </title>
+    <link rel="shortcut icon" href="../../images/ico.ico">
+    <script src="../../storage/js/cloak.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="lib/chessboardjs/css/chessboard-0.3.0.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="_vendor/css2.css" rel="stylesheet">
+
+    
+</head>
+
+<body>
+    <div id="container">
+        <div id="header"><img src="./img/chesspieces/chess.png" alt=""></div>
+        <div class="info mode-panel">
+            <h2 class="info-title">Game Mode</h2>
+            <button type="button" class="mode-btn active" data-mode="1">1 Player</button>
+            <button type="button" class="mode-btn" data-mode="2">2 Players</button>
+            <p class="mode-hint">Switching mode restarts the game.</p>
+        </div>
+        <div id="board" class="board"></div>
+        <div class="info">
+            <h2 class="info-title">Chess</h2>
+            <div class="stat">
+                <span class="stat-label">Search depth</span>
+                <select id="search-depth">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Positions evaluated</span>
+                <span class="stat-value" id="position-count">&ndash;</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Time</span>
+                <span class="stat-value" id="time">&ndash;</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Positions/s</span>
+                <span class="stat-value" id="positions-per-s">&ndash;</span>
+            </div>
+            <h3 class="moves-title">Moves</h3>
+            <div id="move-history" class="move-history">
+            </div>
+        </div>
+    </div>
+    <script src="lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="lib/chessboardjs/js/chess.js"></script>
+    <script src="lib/chessboardjs/js/chessboard-0.3.0.js"></script>
+    <script src="script.js"></script>
+    <script>
+
+    </script>
+</body>
+
+</html>

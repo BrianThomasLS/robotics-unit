@@ -1,0 +1,162 @@
+<!DOCTYPE html><html><head><script>
+// ── CrazyGames SDK Mock for offline play ──
+// Intercept dynamic script loading to prevent real SDK from loading
+(function() {
+    var _origCreateElement = document.createElement.bind(document);
+    document.createElement = function(tag) {
+        var el = _origCreateElement(tag);
+        if (tag.toLowerCase() === 'script') {
+            var _origSrcSet = el.__lookupSetter__('src') || Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, 'src').set;
+            Object.defineProperty(el, 'src', {
+                set: function(val) {
+                    if (val && val.indexOf('sdk.crazygames.com') !== -1) {
+                        console.log('[SDK Mock] Blocked real SDK load:', val);
+                        // Fire load event so the caller thinks it loaded
+                        setTimeout(function() {
+                            var evt = new Event('load');
+                            el.dispatchEvent(evt);
+                            if (el.onload) el.onload(evt);
+                        }, 10);
+                        return;
+                    }
+                    _origSrcSet.call(el, val);
+                },
+                get: function() { return el.getAttribute('src') || ''; }
+            });
+        }
+        return el;
+    };
+})();
+
+// Mock SDK objects
+window.CrazyGames = window.CrazyGames || {};
+window.CrazyGames.SDK = {
+    init: function() { return Promise.resolve(); },
+    game: {
+        sdkGameLoadingStart: function() {},
+        sdkGameLoadingStop: function() {},
+        gameplayStart: function() {},
+        gameplayStop: function() {},
+        happytime: function() {},
+        loadingStart: function() {},
+        loadingStop: function() {},
+    },
+    ad: {
+        requestAd: function(type, callbacks) {
+            callbacks = callbacks || {};
+            setTimeout(function() {
+                if (callbacks.adFinished) callbacks.adFinished();
+                else if (callbacks.adError) callbacks.adError();
+            }, 100);
+        },
+        hasAdblock: false,
+    },
+    user: {
+        isUserAccountAvailable: false,
+        showAuthPrompt: function() { return Promise.reject('offline'); },
+        showAccountLinkPrompt: function() { return Promise.reject('offline'); },
+        getUser: function() { return Promise.resolve(null); },
+        getToken: function() { return Promise.resolve(null); },
+        getXsollaUserToken: function() { return Promise.resolve(null); },
+        addScoreChangeListener: function() {},
+        addAuthListener: function() {},
+    },
+    data: {
+        save: function() { return Promise.resolve(); },
+        load: function() { return Promise.resolve(null); },
+        getItem: function() { return Promise.resolve(null); },
+        setItem: function() { return Promise.resolve(); },
+        removeItem: function() { return Promise.resolve(); },
+        clear: function() { return Promise.resolve(); },
+    },
+    banner: { requestBanner: function() {} },
+    environment: 'disabled',
+    isInitialized: true,
+};
+window.CrazyGames.CrazySDK = window.CrazyGames.SDK;
+
+// V3 SDK compat
+window.Crazygames = window.CrazyGames;
+</script>
+<meta charset="utf-8"><link rel="preload" href="forced_square.woff2" as="font" type="font/woff2" crossorigin="anonymous"><link rel="preload" href="images/logo.svg" as="image" type="image/svg+xml"><link rel="preload" href="images/discord.svg" as="image" type="image/svg+xml"><link rel="manifest" href="manifest.json"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no"><script defer="defer" src="error_screen.bundle.js"></script><script defer="defer" src="main.bundle.js"></script><link rel="canonical" href="https://www.crazygames.com/game/polytrack">
+<style>
+#__vn_stuck{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.78);z-index:2147483647;color:#fff;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;backdrop-filter:blur(4px)}
+#__vn_stuck.show{display:flex}
+#__vn_stuck>div{background:#0f0f0f;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px 26px;max-width:380px;box-shadow:0 18px 60px rgba(0,0,0,.55);text-align:center}
+#__vn_stuck h3{margin:0 0 8px;font-size:16px;font-weight:600;color:#f0f0f0}
+#__vn_stuck p{margin:0 0 16px;color:rgba(255,255,255,.6);font-size:13px}
+#__vn_stuck button{background:#fff;color:#000;border:0;border-radius:10px;padding:10px 18px;font-weight:600;font-size:13.5px;cursor:pointer;font-family:inherit}
+#__vn_stuck button:hover{filter:brightness(1.06)}
+#__vn_stuck .alt{display:block;margin-top:10px;color:rgba(255,255,255,.45);font-size:12px;text-decoration:underline;cursor:pointer;background:transparent;border:0}
+</style>
+</head><body><canvas id="screen"></canvas><div id="ui"></div><div id="transition-layer"></div>
+<div id="__vn_stuck" aria-hidden="true">
+  <div>
+    <h3>Stuck loading?</h3>
+    <p>The game hasn't finished loading. This usually means the network stalled mid-download. Reloading with a fresh cache fixes it.</p>
+    <button id="__vn_stuck_reload">Reload</button>
+    <button class="alt" id="__vn_stuck_dismiss">Wait a bit more</button>
+  </div>
+</div>
+<script>
+// Watchdog: if the canvas hasn't started rendering AND the loading UI is
+// still up after 25s, show a "stuck?" prompt with a cache-busted reload.
+// Polytrack's main.bundle.js sets up its own loading screen on the
+// transition-layer; we detect "still loading" by checking that the
+// transition layer is present + visible. The user can dismiss for another
+// 25s window. Doesn't affect anyone whose game loads normally.
+(function(){
+  var SHOW_MS = 25000;
+  var watchdog = null;
+  function isStillLoading() {
+    var tl = document.getElementById('transition-layer');
+    if (!tl) return false;
+    var style = getComputedStyle(tl);
+    if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+    return true;
+  }
+  function showStuck() {
+    if (!isStillLoading()) return;  // game finished — false alarm
+    var el = document.getElementById('__vn_stuck');
+    if (el) el.classList.add('show');
+  }
+  function arm() {
+    if (watchdog) clearTimeout(watchdog);
+    watchdog = setTimeout(showStuck, SHOW_MS);
+  }
+  function cacheBustedReload() {
+    try { sessionStorage.setItem('__vn_polytrack_bust', '1'); } catch (_) {}
+    // Append a cache-bust query param. The SW's stale-while-revalidate
+    // doesn't ignoreSearch on .wasm/.bundle.js so this forces a full
+    // network refetch instead of serving any stale cached fragments.
+    var u = new URL(location.href);
+    u.searchParams.set('cb', Date.now().toString(36));
+    location.replace(u.toString());
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    var r = document.getElementById('__vn_stuck_reload');
+    var d = document.getElementById('__vn_stuck_dismiss');
+    if (r) r.addEventListener('click', cacheBustedReload);
+    if (d) d.addEventListener('click', function(){
+      var el = document.getElementById('__vn_stuck');
+      if (el) el.classList.remove('show');
+      arm();
+    });
+    arm();
+  });
+  // If polytrack starts rendering, cancel the watchdog. Detect via canvas
+  // first paint — the game draws to #screen, so once it has size set we
+  // know rendering started.
+  var canvas = document.getElementById('screen');
+  if (canvas) {
+    var obs = new MutationObserver(function(){
+      if (canvas.width > 0 && canvas.height > 0) {
+        if (watchdog) { clearTimeout(watchdog); watchdog = null; }
+        obs.disconnect();
+      }
+    });
+    obs.observe(canvas, { attributes: true, attributeFilter: ['width', 'height'] });
+  }
+})();
+</script>
+</body></html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Plop The Blob</title>
+    <!-- TEST: Google Fonts (remove for Poki build) -->
+    <style>
+        /* Nunito font (local - Poki compatible) */
+        @font-face {
+            font-family: 'Nunito';
+            font-weight: 900;
+            font-style: normal;
+            font-display: block;
+            src: url('./fonts/Nunito-Black.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Nunito Black';
+            font-style: normal;
+            font-display: block;
+            src: url('./fonts/Nunito-Black.woff2') format('woff2');
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #fff;
+            touch-action: none;
+        }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+<div id="game-loader" style="position:fixed;inset:0;background:#4ECDC4;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;opacity:1;"><div style="width:200px;height:8px;background:rgba(255,255,255,0.3);border-radius:4px;overflow:hidden;"><div id="loader-bar" style="width:0%;height:100%;background:#fff;border-radius:4px;transition:width 0.1s ease-out;"></div></div><div id="loader-percent" style="margin-top:12px;color:#fff;font-family:system-ui,-apple-system,sans-serif;font-size:14px;font-weight:500;">0%</div></div>
+    <script src="/scripts/v2/sdk.js?v=12"></script>
+    <canvas id="game"></canvas>
+    <!-- Poly-decomp for concave polygon support -->
+    <script src="./poly-decomp.min.js"></script>
+    <!-- Matter.js for physics -->
+    <script src="./matter.min.js"></script>
+    <!-- WebAudioTinySynth - GM instruments for Music module -->
+    <!-- Audio DSP modules (single-source-of-truth) -->
+    <!-- RCHIPL_AudioCore.js - Audio DSP bake & IndexedDB cache -->
+    <!-- RCHIPL_Renderer.js - Shape rendering module (loaded first) -->
+    <!-- RCHIPL.js loaded externally (always up to date) -->
+    <script src="./RCHIPL.js"></script>
+    <script>
+        // No midroll ads on level complete/restart — monetization comes from the rewarded level-skip only
+        RCHIPL.Platform._disableCommercialBreaks = true;
+    </script>
+    <script src="ploptheblob-sfx.js"></script>
+    <script>
+        </script>
+    
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"746e692914cd4b90b5c7c71508c3d45b","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
