@@ -1,0 +1,172 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-color: #0a1f44;
+    font-family: 'Ubuntu', sans-serif;
+    min-height: 100vh;
+}
+#container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 2vmin;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 2vmin;
+}
+#header {
+    display: none;
+}
+.board {
+    width: min(46vw, 85vh);
+    margin: 0;
+    flex-shrink: 0;
+}
+
+/* --- move hints (chess.com style) --- */
+#board .square-55d63 {
+    position: relative;
+}
+#board .hint-move::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 34%;
+    height: 34%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(10, 25, 55, 0.28);
+    pointer-events: none;
+}
+#board .hint-capture::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 6px rgba(10, 25, 55, 0.28);
+    pointer-events: none;
+}
+
+/* --- cursors --- */
+#board img[data-piece] {
+    cursor: grab;
+}
+body.dragging-piece,
+body.dragging-piece * {
+    cursor: grabbing !important;
+}
+
+/* --- sidebars (vw-based so they scale with zoom) --- */
+.info {
+    width: 20vw;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 1.5vw 1.6vw;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.1vw;
+    background-color: #12295a;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0.5vw 1.6vw rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 1.05vw;
+}
+.mode-panel {
+    width: 14vw;
+}
+.info-title {
+    margin: 0 0 0.9em;
+    font-size: 1.3em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.mode-btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0 0 0.6em;
+    padding: 0.65em 0.8em;
+    background-color: #1d3a75;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.55em;
+    font-family: inherit;
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+}
+.mode-btn:hover {
+    background-color: #264a94;
+}
+.mode-btn.active {
+    background-color: #2f62c4;
+    border-color: rgba(255, 255, 255, 0.35);
+}
+.mode-hint {
+    margin: 0.4em 0 0;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.4;
+}
+.stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.7em;
+    padding: 0.6em 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: 0.9em;
+}
+.stat-label {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 400;
+}
+.stat-value {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+#search-depth {
+    background-color: #1d3a75;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.4em;
+    padding: 0.2em 0.55em;
+    font-family: inherit;
+    font-size: 1em;
+    cursor: pointer;
+}
+body.two-player .stat {
+    display: none;
+}
+.moves-title {
+    margin: 1.1em 0 0.55em;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.65);
+}
+.move-history {
+    min-height: 4em;
+    max-height: 30vh;
+    overflow-y: auto;
+    padding: 0.55em 0.8em;
+    border-radius: 0.55em;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+    font-weight: 400;
+    font-size: 0.9em;
+    line-height: 1.7;
+    text-align: left;
+}
