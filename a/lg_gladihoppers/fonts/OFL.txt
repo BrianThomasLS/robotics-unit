@@ -1,0 +1,4 @@
+Press Start 2P is licensed under the SIL Open Font License, Version 1.1.
+Copyright (c) 2011 CodeMan38.
+Full license text: https://scripts.sil.org/OFL
+Bundled locally so this build makes no external requests.
